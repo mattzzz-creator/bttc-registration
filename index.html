@@ -149,6 +149,7 @@ pre.det{white-space:pre-wrap;word-break:break-word;font:13px/1.55 ui-monospace,M
 </div></header>
 <main class="wrap" id="app"></main>
 
+<script src="config.js"></script>
 <script>
 (function(){
 'use strict';
@@ -266,6 +267,7 @@ function stepHTML(){
      +fld('street','House no. and street',{w:'w6',ac:'address-line1'})
      +fld('barangay','Barangay',{req:1,w:'w2'})+fld('city','City or municipality',{req:1,w:'w2'})+fld('province','Province',{req:1,w:'w2',ph:'Cavite'})
      +fld('education','Highest educational attainment',{type:'select',req:1,w:'w3',opts:['Elementary graduate','High school level','High school graduate','Senior High School graduate','College level','College graduate','Vocational / TVET graduate']})
+     +'<div style="position:absolute;left:-9999px" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div>'
      +'<div class="sect">Emergency contact</div>'
      +fld('ecName','Full name',{req:1,w:'w2'})+fld('ecRel','Relationship',{req:1,w:'w2'})+fld('ecMobile','Mobile number',{req:1,w:'w2',type:'tel',inputmode:'tel'})
      +'</div>';
@@ -324,7 +326,7 @@ function makeRef(){var d=new Date(),c='ABCDEFGHJKMNPQRSTUVWXYZ23456789',r='';for
   return 'BTTC-'+String(d.getFullYear()).slice(2)+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')+'-'+r}
 function buildRecord(){
   var r={ref:ref,type:mode,programId:prog.id,program:prog.name,submittedAt:new Date().toISOString()};
-  ['lastName','firstName','middleName','suffix','sex','civil','birthdate','birthplace','nationality','mobile','email','facebook','street','barangay','city','province','education','ecName','ecRel','ecMobile','empStatus','hasJobs','hasTesda','usi','basis','basisFrom','pay','source','notes'].forEach(function(k){r[k]=String(f[k]||'').trim()});
+  ['lastName','firstName','middleName','suffix','sex','civil','birthdate','birthplace','nationality','mobile','email','facebook','street','barangay','city','province','education','ecName','ecRel','ecMobile','empStatus','hasJobs','hasTesda','usi','basis','basisFrom','pay','source','notes','website'].forEach(function(k){r[k]=String(f[k]||'').trim()});
   r.age=ageOf(f.birthdate);
   r.jobs=f.hasJobs==='yes'?f.jobs.filter(function(j){return j.employer||j.position}).map(function(j){return {employer:j.employer||'',position:j.position||'',from:j.from||'',to:j.to||''}}):[];
   r.tesda=f.hasTesda==='yes'?f.tesda.filter(function(j){return j.prog}).map(function(j){return {prog:j.prog||'',center:j.center||'',year:j.year||'',result:j.result||''}}):[];
@@ -404,7 +406,7 @@ function toTop(){var c=$('#card');if(c&&c.scrollIntoView)c.scrollIntoView({block
 async function submit(){
   var e=validate(5);errs=e;if(Object.keys(e).length){drawForm();return}
   ref=makeRef();var rec=buildRecord();busy=true;saved=false;drawForm();
-  try{if(db){await db.doc('registrations/'+ref).set(rec);saved=true}}catch(x){saved=false}
+  try{if(window.BTTC_ENDPOINT){await fetch(window.BTTC_ENDPOINT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(rec)});saved=true}else if(db){await db.doc('registrations/'+ref).set(rec);saved=true}}catch(x){saved=false}
   busy=false;doneRec=rec;view='done';render();toTop()}
 function copy(){var t=$('#sum'),m=$('#copied');var ok=function(){if(m)m.textContent='Copied'};
   var fb=function(){try{t.focus();t.select();if(document.execCommand('copy'))ok();else if(m)m.textContent='Select the text and copy it.'}catch(x){if(m)m.textContent='Select the text and copy it.'}};

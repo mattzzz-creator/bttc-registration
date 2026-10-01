@@ -69,7 +69,7 @@ a{color:var(--accent)}
 .rs i{font-style:normal;width:26px;height:26px;border-radius:50%;background:var(--line);display:grid;place-items:center;font-size:12.5px;font-weight:700;flex:none}
 .rs.on{background:var(--surface);color:var(--ink);font-weight:600;box-shadow:0 0 0 1px var(--line)}
 .rs.on i{background:var(--btn);color:var(--btn-ink)}
-.rs.done i{background:var(--ok);color:#fff}
+.rs.fin i{background:var(--ok);color:#fff}
 .mprog{display:none;padding:14px 16px 0}
 .bar{height:6px;border-radius:9px;background:var(--line);overflow:hidden;margin-top:8px}
 .bar i{display:block;height:100%;background:var(--btn)}
@@ -229,7 +229,7 @@ function drawHome(){
 }
 function drawForm(){
   app.className='wrap';
-  var rail=STEPS.map(function(s,i){return '<div class="rs'+(i===step?' on':'')+(i<step?' done':'')+'"><i>'+(i<step?'&#10003;':(i+1))+'</i><span>'+esc(s)+'</span></div>'}).join('');
+  var rail=STEPS.map(function(s,i){return '<div class="rs'+(i===step?' on':'')+(i<step?' fin':'')+'"><i>'+(i<step?'&#10003;':(i+1))+'</i><span>'+esc(s)+'</span></div>'}).join('');
   var dur = mode==='training'?prog.dur:'Assessment';
   app.innerHTML='<div class="card" id="card"><div class="card-h"><div><small>Beatitudes Technological &amp; Theological College</small><h2>Registration Form for '+esc(prog.name)+(mode==='assessment'?' (Assessment)':'')+'</h2></div><span class="pill">'+esc(dur)+'</span></div>'
    +'<div class="mprog"><div class="kick">Step '+(step+1)+' of 6 &middot; '+esc(STEPS[step])+'</div><div class="bar"><i style="width:'+Math.round((step+1)/6*100)+'%"></i></div></div>'
